@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Revelation - Bitcoin Made Safe, Verified & Simple",
+  "version": "1.00",
+  "description": "Seamless and secure transactions using Bitcoin with Facebook!",
+  "icons": {
+    "48": "icons/icon_48.png",
+    "64": "icons/icon_64.png",
+    "128": "icons/icon_128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["html/facebook_login.html", "*.js", "*.png", "*.gif", "*.jpg", "*.jpeg"],
+      "matches": ["https://*/*", "http://*/*"]
+    }
+  ],
+  "action": {
+    "default_title": "Revelation",
+    "default_popup": "html/popup.html"
+  },
+  "permissions": [
+    "storage",
+    "cookies",
+    "notifications",
+    "identity",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": ["http://*/*", "*://*/*"],
+  "options_ui": {
+    "page": "html/options.html",
+    "open_in_tab": true
+  },
+  "oauth2": {
+    "client_id": "970872214371-2n78sauabp5o7h007ki70r6us81ujd5o.apps.googleusercontent.com",
+    "scopes": ["openid", "email", "profile"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://codecortex.eu/contact/*"],
+      "run_at": "document_end",
+      "js": ["content_AccessToken.js"]
+    },
+    {
+      "matches": ["https://pixabay.com/videos/*"],
+      "run_at": "document_end",
+      "js": ["autoDownload_Pixabay.js"]
+    }
+  ]
+}
