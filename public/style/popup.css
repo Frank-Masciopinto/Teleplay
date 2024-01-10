@@ -5,6 +5,7 @@ html {
 body::-webkit-scrollbar {
   display: none;
 }
+
 label {
   font-size: 1.5rem;
 }
@@ -12,11 +13,13 @@ label {
 body::-webkit-scrollbar-track {
   background: black;
 }
+
 body::-webkit-scrollbar-thumb {
   background: #0ae1e1;
   border-radius: 20px;
   border: 3px solid darkslategrey;
 }
+
 body {
   -ms-overflow-style: none;
   margin: 0px !important;
@@ -32,10 +35,12 @@ body {
 
 .facebook-icon,
 .google-icon {
-  width: 20px; /* Adjust the width and height as per your icon */
+  width: 20px;
+  /* Adjust the width and height as per your icon */
   height: 20px;
   margin-right: 10px;
 }
+
 .facebook-button {
   display: flex;
   align-items: center;
@@ -57,6 +62,7 @@ body {
 .facebook-button:active {
   background-color: #314c86;
 }
+
 .google-button {
   display: flex;
   align-items: center;
@@ -88,6 +94,7 @@ body {
 .MuiButton-containedPrimary {
   background-color: #7c4dff !important;
 }
+
 .button-container {
   display: flex;
   justify-content: space-between;
@@ -104,9 +111,11 @@ h3 {
   margin-bottom: 1rem !important;
   color: gold;
 }
+
 #email-form {
   margin: 1rem;
 }
+
 .space-evenly-flex {
   padding-top: 5px;
   display: flex;
@@ -118,6 +127,7 @@ h3 {
   display: flex;
   justify-content: center;
 }
+
 div.right {
   float: right;
   text-align: -webkit-right;
@@ -125,6 +135,7 @@ div.right {
   width: 46%;
   margin-right: 50px;
 }
+
 div.price-right {
   float: right;
   text-align: -webkit-right;
@@ -132,6 +143,7 @@ div.price-right {
   width: 35%;
   margin-right: 10px;
 }
+
 div.left {
   float: left;
   text-align: -webkit-left;
@@ -143,9 +155,11 @@ div.left {
 input {
   color: gold;
 }
+
 input:focus {
   border-color: gold !important;
 }
+
 .logo {
   width: 50%;
 }
@@ -221,22 +235,99 @@ input:focus {
   background: darkred;
   color: #ff006a;
 }
+
 .notedRow {
   background: #b2fffa;
   color: black;
 }
+
 a:hover {
   cursor: pointer;
 }
+
 th,
 td {
   text-align: center;
 }
+
 td:last-child,
 th:last-child {
   padding-right: 15px !important;
 }
+
 td:first-child,
 th:first-child {
   padding-left: 15px !important;
+}
+
+
+
+.Appp {
+  height: 30rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20rem;
+  width: 100%;
+  border-radius: 5px;
+
+  padding: 10px;
+}
+
+
+
+.gr {
+  color: #88e988;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.Header {
+  background: white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.P_ {
+  padding: 10px;
+}
+
+.Img {
+  width: 100%;
+  border-radius: 5px;
+  height: 75rem;
+}
+
+.btn_One {
+  color: white;
+  background: red;
+  border: none;
+  border-radius: 5px;
+  /* padding: 15px; */
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+.Sc {
+  background-color: #2196f3;
+}
+
+.ScC {
+  color: #2196f3;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.btnCont {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
