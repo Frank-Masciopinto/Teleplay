@@ -1293,7 +1293,7 @@ chrome.runtime.onInstalled.addListener( /*#__PURE__*/function () {
             _context.next = 13;
             return _constants_js__WEBPACK_IMPORTED_MODULE_0__.LS.setItem('sessionId', Math.random().toString());
           case 13:
-            (0,_constants_js__WEBPACK_IMPORTED_MODULE_0__.notify)('Revelation Installed Successfully', 'Get started!', './icons/icon_64.png');
+            (0,_constants_js__WEBPACK_IMPORTED_MODULE_0__.notify)('Teleplay Installed Successfully', 'Get started!', './icons/icon.png');
           case 14:
           case "end":
             return _context.stop();

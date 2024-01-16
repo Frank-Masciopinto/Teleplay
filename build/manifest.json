@@ -1,20 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "Revelation - Bitcoin Made Safe, Verified & Simple",
+  "name": "Teleplay - Video Editor",
   "version": "1.00",
-  "description": "Seamless and secure transactions using Bitcoin with Facebook!",
+  "description": "Edit videos online with Teleplay. Add text, music, effects, and more. Create stunning videos in minutes with Teleplay.",
   "icons": {
-    "48": "icons/icon_48.png",
-    "64": "icons/icon_64.png",
-    "128": "icons/icon_128.png"
+    "48": "icons/icon.png"
   },
   "background": {
     "service_worker": "background.js"
   },
-  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
   "web_accessible_resources": [
     {
-      "resources": ["html/facebook_login.html", "*.js", "*.png", "*.gif", "*.jpg", "*.jpeg"],
+      "resources": [
+        "html/facebook_login.html",
+        "*.js",
+        "*.png",
+        "*.gif",
+        "*.jpg",
+        "*.jpeg"
+      ],
       "matches": ["https://*/*", "http://*/*"]
     }
   ],
@@ -28,6 +35,8 @@
     "notifications",
     "identity",
     "activeTab",
+    "unlimitedStorage",
+    "fileSystem",
     "tabs"
   ],
   "host_permissions": ["http://*/*", "*://*/*"],

@@ -74,9 +74,9 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       await LS.setItem('sessionId', Math.random().toString());
     }
     notify(
-      'Revelation Installed Successfully',
+      'Teleplay Installed Successfully',
       'Get started!',
-      './icons/icon_64.png'
+      './icons/icon.png'
     );
   }
 });
