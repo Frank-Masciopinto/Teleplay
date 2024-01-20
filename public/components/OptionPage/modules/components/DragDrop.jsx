@@ -28,16 +28,18 @@ export function DragDropBackground({ setVideoFile }) {
 
 export function DragDropOverlay({ setOverlays }) {
   const onOverlayDrop = (acceptedFiles) => {
-    const newOverlay = URL.createObjectURL(acceptedFiles[0]);
     console.log("uploading overlay");
+    console.log(acceptedFiles);
+    if (acceptedFiles.length === 0) return;
+    const newOverlay = URL.createObjectURL(acceptedFiles[0]);
     console.log(acceptedFiles[0]);
-    setOverlays([...overlays, newOverlay]);
+    setOverlays([newOverlay]);
   };
   return (
     <DropzoneArea
       acceptedFiles={["image/*"]}
       dropzoneText="Drag 'n' drop overlay images here, or click to select images"
-      onChange={() => onOverlayDrop}
+      onChange={(files) => onOverlayDrop(files)}
     />
   );
 }
