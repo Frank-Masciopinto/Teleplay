@@ -1,9 +1,11 @@
-import { DropzoneArea } from "material-ui-dropzone";
 import React from "react";
+import { DropzoneArea } from "material-ui-dropzone";
+import { Typography, Paper } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
 export function DragDropBackground({ setVideoFile }) {
   const onVideoDrop = (acceptedFiles) => {
-    console.log("onVideoDrop");
-    console.log(acceptedFiles);
+    console.log("onVideoDrop", acceptedFiles);
     if (
       acceptedFiles &&
       acceptedFiles[0] &&
@@ -11,35 +13,67 @@ export function DragDropBackground({ setVideoFile }) {
     ) {
       const videoUrl = URL.createObjectURL(acceptedFiles[0]);
       console.log(videoUrl);
-      setVideoFile(videoUrl); // Set the video URL here
+      setVideoFile(videoUrl);
     } else {
       console.error("Please upload a valid video file.");
     }
   };
 
   return (
-    <DropzoneArea
-      acceptedFiles={["video/*"]}
-      dropzoneText="Drag 'n' drop a video here, or click to select a video"
-      onChange={onVideoDrop}
-    />
+    <Paper elevation={3} style={{ padding: "20px", textAlign: "center" }}>
+      <DropzoneArea
+        acceptedFiles={["video/*"]}
+        dropzoneText={
+          <Typography variant="h6" style={{ marginBottom: "20px" }}>
+            Drag 'n' drop a background video here, or click to select
+          </Typography>
+        }
+        Icon={CloudUploadIcon}
+        showAlerts={["error"]} // Only show error alerts
+        onChange={onVideoDrop}
+        dropzoneClass="dropzone-style"
+        maxFileSize={500000000} // Example: 500MB limit
+        filesLimit={1} // Limit number of files
+        showPreviewsInDropzone={false} // Do not show file previews inside dropzone
+        useChipsForPreview // Use chips to show file previews below dropzone
+        previewGridProps={{ container: { spacing: 1, direction: "row" } }}
+        previewChipProps={{ classes: { root: "previewChip" } }}
+        previewText="Selected video:"
+      />
+    </Paper>
   );
 }
+import ImageIcon from "@mui/icons-material/Image";
 
 export function DragDropOverlay({ setOverlays }) {
   const onOverlayDrop = (acceptedFiles) => {
-    console.log("uploading overlay");
-    console.log(acceptedFiles);
+    console.log("Uploading overlay", acceptedFiles);
     if (acceptedFiles.length === 0) return;
     const newOverlay = URL.createObjectURL(acceptedFiles[0]);
-    console.log(acceptedFiles[0]);
-    setOverlays([newOverlay]);
+    setOverlays((prevOverlays) => [...prevOverlays, newOverlay]); // To allow multiple overlays
   };
+
   return (
-    <DropzoneArea
-      acceptedFiles={["image/*"]}
-      dropzoneText="Drag 'n' drop overlay images here, or click to select images"
-      onChange={(files) => onOverlayDrop(files)}
-    />
+    <Paper elevation={3} style={{ padding: "20px", textAlign: "center" }}>
+      <DropzoneArea
+        acceptedFiles={["image/*"]}
+        dropzoneText={
+          <Typography variant="h6" style={{ marginBottom: "20px" }}>
+            Drag 'n' drop overlay images here, or click to select images
+          </Typography>
+        }
+        Icon={ImageIcon}
+        showAlerts={["error"]} // Only show error alerts
+        onChange={onOverlayDrop}
+        dropzoneClass="overlay-dropzone-style"
+        maxFileSize={100000000} // Example: 100MB limit
+        filesLimit={10} // Adjust based on how many overlays you want to allow
+        showPreviewsInDropzone={false} // Do not show file previews inside dropzone
+        useChipsForPreview // Use chips to show file previews below dropzone
+        previewGridProps={{ container: { spacing: 1, direction: "row" } }}
+        previewChipProps={{ classes: { root: "previewChip" } }}
+        previewText="Selected overlays:"
+      />
+    </Paper>
   );
 }

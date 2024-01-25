@@ -4,11 +4,13 @@ import videojs from "video.js";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { Button } from "@material-ui/core";
+import Overlay from "./Overlay.jsx";
 function VideoEditorInterface({
   videoFile,
   videoRef,
   overlays,
   playerRef,
+  setOverlays,
   setVideoFile,
 }) {
   const [loaded, setLoaded] = useState(false);
@@ -129,6 +131,7 @@ function VideoEditorInterface({
       new Blob([data.buffer], { type: "video/mp4" })
     );
     setVideoFile(null);
+    setOverlays([]);
     console.log("🟢 Finished editing editedVideoUrl 🟢");
     console.log(edited_video_url);
     setVideoFile(edited_video_url);
@@ -192,19 +195,14 @@ function VideoEditorInterface({
               bounds="parent"
               onStop={(e, data) => handleStop(index, e, data, overlay)}
             >
-              <img
-                src={overlay}
-                className="overlay-image"
-                alt={`Overlay ${index}`}
-                style={{ position: "absolute", zIndex: 2 }}
-              />
+              <Overlay src={overlay} />
             </Draggable>
           ))}
       </div>
 
       {loaded && (
         <Button variant="contained" color="primary" onClick={renderVideo}>
-          Rotate 90 and Render Video
+          Render Video
         </Button>
       )}
       <p ref={messageRef}></p>
