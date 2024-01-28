@@ -195,7 +195,7 @@ function VideoEditorInterface({
               bounds="parent"
               onStop={(e, data) => handleStop(index, e, data, overlay)}
             >
-              <Overlay src={overlay} />
+              <img src={overlay}></img>
             </Draggable>
           ))}
       </div>
