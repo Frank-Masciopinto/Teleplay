@@ -1,0 +1,23 @@
+.video-js {
+  height: 70vh;
+}
+.video-placeholder {
+  width: 81%;
+  height: 70vh;
+  margin-top: 35px;
+  background-color: white;
+  margin-bottom: 20px;
+}
+.video-container {
+  margin-top: 0px !important;
+}
+.dropzone-style {
+  border: 2px dashed #90caf9; /* Custom border color */
+  border-radius: 10px; /* Rounded corners */
+  background-color: #e3f2fd; /* Light background color */
+  padding: 20px; /* Spacing inside dropzone */
+}
+
+.previewChip {
+  margin: 10px; /* Spacing around preview chips */
+}
