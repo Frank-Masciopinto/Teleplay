@@ -47,17 +47,5 @@
   "oauth2": {
     "client_id": "970872214371-2n78sauabp5o7h007ki70r6us81ujd5o.apps.googleusercontent.com",
     "scopes": ["openid", "email", "profile"]
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://codecortex.eu/contact/*"],
-      "run_at": "document_end",
-      "js": ["content_AccessToken.js"]
-    },
-    {
-      "matches": ["https://pixabay.com/videos/*"],
-      "run_at": "document_end",
-      "js": ["autoDownload_Pixabay.js"]
-    }
-  ]
+  }
 }

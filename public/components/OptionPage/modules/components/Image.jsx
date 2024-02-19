@@ -1,136 +1,108 @@
 import React, { useRef, useEffect, useState } from "react";
+import Moveable from "moveable";
 
-import Moveable, { DIRECTIONS } from "react-moveable";
-
-function Image({ image, index, setImages }) {
+function Image({ image, index, scaleX, scaleY, handleDrag }) {
   const imageRef = useRef(null);
-
-  // const handleRotate = (e) => {
-  //   const { width, height } = e.target.getBoundingClientRect();
-  //   console.log(e.target, "handle Rotate");
-  //   setImages(
-  //     {
-  //       width: parseInt(width),
-  //       height: parseInt(height),
-  //       rotationAngle: getCurrentRotation(e.target.id),
-  //       image: image,
-  //     },
-  //     index
-  //   );
-  // };
-  return (
-    <>
-        <img
-          style={{
-            width: "320px",
-            height: "240px",
-          }}
-          src={image}
-          alt=""
-          ref={imageRef}
-          id={`image${index}`}
-        />
-      <MoveableImage imageRef={imageRef} />
-
-    </>
-  );
-}
-
-export default Image;
-
-
-// Moveable image take image ref as target and calculate resiable
-function MoveableImage({ imageRef }) {
-  const handleRotate = (e) => {
-    const { width, height } = e.target.getBoundingClientRect();
-    console.log(e.target, "handle Rotate");
-    setImages(
-      {
-        width: parseInt(width),
-        height: parseInt(height),
-        rotationAngle: getCurrentRotation(e.target.id),
-      },
-      index
-    );
+  const scalePositionMoveable = (data) => {
+    console.log("⭐scalePositionMoveable");
+    console.log(data);
+    const adjustedX = data.x * scaleX;
+    console.log("scaleX", scaleX);
+    const adjustedY = data.y * scaleY;
+    // Ensure coordinates are positive
+    const finalX = Math.max(0, adjustedX);
+    const finalY = Math.max(0, adjustedY);
+    console.log("finalX", finalX);
+    return [finalX, finalY];
   };
+  useEffect(() => {
+    const moveable = new Moveable(document.querySelector(".video-js"), {
+      dragArea: false,
+      draggable: true,
+      container: document.querySelector(".video-js"),
+      bounds: document.querySelector(".video-js").getBoundingClientRect(),
+      resizable: true,
+      scalable: true,
+      rotatable: true,
+      warpable: true,
+      // Enabling pinchable lets you use events that
+      // can be used in draggable, resizable, scalable, and rotateable.
+      pinchable: true, // ["resizable", "scalable", "rotatable"]
+      origin: true,
+      keepRatio: true,
+      // Resize, Scale Events at edges.
+      edge: false,
+      throttleDrag: 0,
+      throttleResize: 0,
+      throttleScale: 0,
+      throttleRotate: 0,
+    });
+    moveable.target = imageRef?.current;
+    moveable.on("drag", (e) => {
+      const targetRect = moveable.getRect();
+      const parentRect = document
+        .querySelector(".video-js")
+        .getBoundingClientRect();
+      const newX = e.clientX - parentRect.left - targetRect.width / 2;
+      const newY = e.clientY - parentRect.top - targetRect.height / 2;
+      const maxX = parentRect.width - targetRect.width;
+      const maxY = parentRect.height - targetRect.height;
+      const constrainedX = Math.min(Math.max(0, newX), maxX);
+      const constrainedY = Math.min(Math.max(0, newY), maxY);
+      console.log("constrainedX, constrainedY:", constrainedX, constrainedY);
+      e.target.style.left = `${constrainedX}px`;
+      e.target.style.top = `${constrainedY}px`;
+      let [finalX, finalY] = scalePositionMoveable({
+        x: constrainedX,
+        y: constrainedY,
+      });
+      console.log("finalX, finalY:", finalX, finalY);
+      handleDrag(image, finalX, finalY);
+    });
+    moveable.on("rotate", ({ target, transform }) => {
+      console.log("Rotate event:", transform);
+      target.style.transform = transform;
+    });
+    moveable.on(
+      "resize",
+      ({ target, width, height, dist, delta, clientX, clientY }) => {
+        console.log("onResize", target);
+        if (delta[0]) {
+          target.style.width = `${width}px`;
+        }
+        if (delta[1]) {
+          target.style.height = `${height}px`;
+        }
+      }
+    );
+  }, [imageRef]);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     const scaleFactor = 0.5;
+  //     const { width, height } = imageRef.current.getBoundingClientRect();
+  //     const scaledWidth = width * scaleFactor;
+  //     const scaledHeight = height * scaleFactor;
+  //     imageRef.current.style.width = `${scaledWidth}px`;
+  //     imageRef.current.style.height = `${scaledHeight}px`;
+  //   };
+  //   setTimeout(() => {
+  //     handleResize();
+  //   }, 500);
+  // }, []);
   return (
-    <Moveable
-      target={imageRef}
-      // draggable={true}
-      rotatable={{
-        renderDirections: DIRECTIONS,
+    <img
+      style={{
+        width: "fit-content",
+        height: "fit-content",
+        position: "absolute",
       }}
-      resolveAblesWithRotatable={{
-        resizable: ["nw", "ne", "sw", "se"],
-      }}
-      lockVertically={false}
-      resizable={{
-        renderDirections: false,
-      }}
-      rotateAroundControls={true}
-      onDrag={(e) => {
-        console.log(e.target.dataset, "Dragging");
-        // e.target.style.cssText += `transform: ${e.transform};`;
-      }}
-      onDragEnd={(e) => {
-        console.log(e, "on Drag End");
-      }}
-      onResize={(e) => {
-        console.log(e.target, "resize");
-      }}
-      onRotateStart={(e) => {
-        // e.setFixedDirection([0, 0]);
-      }}
-      onRotate={(e) => {
-        // e.target.style.cssText = e.cssText;
-        e.target.style.cssText += e.cssText;
-      }}
-      onRotateEnd={(e) => handleRotate(e)}
+      src={image}
+      alt=""
+      className={`draggable-${index}`}
+      ref={imageRef}
+      id={`draggable${index}`}
     />
   );
 }
 
-// Function to find rotation angle of image in degree. it take id of target element as parameter
-function getCurrentRotation(elid) {
-  var el = document.getElementById(elid);
-  var st = window.getComputedStyle(el, null);
-  var tr =
-    st.getPropertyValue("-webkit-transform") ||
-    st.getPropertyValue("-moz-transform") ||
-    st.getPropertyValue("-ms-transform") ||
-    st.getPropertyValue("-o-transform") ||
-    st.getPropertyValue("transform") ||
-    "fail...";
-
-  if (tr !== "none") {
-    console.log("Matrix: " + tr);
-
-    var values = tr.split("(")[1];
-    values = values.split(")")[0];
-    values = values.split(",");
-    var a = values[0];
-    var b = values[1];
-    var c = values[2];
-    var d = values[3];
-
-    var scale = Math.sqrt(a * a + b * b);
-
-    // First option, don't check for negative result
-    // Second, check for the negative result
-    /**/
-    var radians = Math.atan2(b, a);
-    var angle = Math.round(radians * (180 / Math.PI));
-    /*/
-    var radians = Math.atan2(b, a);
-    if ( radians < 0 ) {
-      radians += (2 * Math.PI);
-    }
-    var angle = Math.round( radians * (180/Math.PI));
-    /**/
-  } else {
-    var angle = 0;
-  }
-
-  // works!
-  return angle;
-}
+export default Image;

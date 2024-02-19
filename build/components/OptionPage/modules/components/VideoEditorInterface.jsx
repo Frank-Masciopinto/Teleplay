@@ -20,6 +20,7 @@ function VideoEditorInterface({
   const [loaded, setLoaded] = useState(false);
   const [videoBounds, setVideoBounds] = useState(null);
   const [overlayPositions, setOverlayPositions] = useState([]);
+  let [newOverlayPositions, setNewOverlayPositions] = useState({});
   const [scaleX, setScaleX] = useState(1); // Horizontal scaling factor
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
   const [backgroundFrameRate, setBackgroundFrameRate] = useState(0); // Background video frame rate
@@ -123,8 +124,11 @@ function VideoEditorInterface({
       return overlayPositions[0].timeline
         .map((timeline, index, array) => {
           let nextFrame =
-            index < array.length - 1 ? array[index + 1].frame - 1 : "n+1";
+            index < array.length - 1 ? array[index + 1].frame : "n+1";
+          // index < array.length - 1 ? array[index + 1].frame - 1 : "n+1";
+          //TODO: add rotation and size to the overlay
           let chainStart = index > 0 ? `[v${index - 1}][1:v]` : `[0:v][1:v]`;
+          // : `[1:v]scale=400:250[overlay];[0:v][overlay]`;
           let chainSuffix = `[v${index}]`;
           return `${chainStart}overlay=${timeline.x}:${timeline.y}:enable='between(n\\,${timeline.frame}\\,${nextFrame})'${chainSuffix}`;
         })
@@ -155,9 +159,9 @@ function VideoEditorInterface({
         .map((overlay) => ["-i", overlay.fileNameFFMPEG])
         .flat(),
       "-filter_complex",
-      `${generateOverlayFilters()}`,
+      `${generateOverlayFilters()};[1:v]rotate='90:c=none:ow=hypot(iw,ih):oh=ow'[rotate];[v0][rotate]overlay=0:0[rotated]`,
       "-map",
-      `[v${overlayPositions[0].timeline.length - 1}]`, // Map the final overlay to the output
+      `[rotated]`, // Map the final overlay to the output
       "-r",
       "30",
       "-c:v",
@@ -181,20 +185,18 @@ function VideoEditorInterface({
     console.log(edited_video_url);
     setVideoFile(edited_video_url);
   }
-  const handleDrag = async (index, e, data, overlayPath) => {
-    let imageElement = document.querySelector(`.draggable-${index}`);
-    //check if already scaled image dimensions efore
-    // if (!imageElement.style.width) {
-    //   imageElement.style.width = imageElement.width * scaleX + "px";
-    //   imageElement.style.height = imageElement.height * scaleY + "px";
-    // }
+  const getVideoFramePosition = () => {
+    const videoElement = videoRef.current;
+    const currentTimeInSeconds = videoElement ? videoElement.currentTime : 0; // Current time in seconds
+    const timestamp = currentTimeInSeconds * 1000; // Convert to milliseconds
+    const frameNumber = Math.round((timestamp / 1000) * stateFrameRate.current); // Convert milliseconds to frame number
+    console.log("timestamp", timestamp);
+    return frameNumber;
+  };
+  const handleDrag = async (overlayPath, finalX, finalY) => {
     console.log("handleDrag()");
     let currentBackgroundFrame = getVideoFramePosition();
     // Assuming videoRef is a reference to your video element
-    let [finalX, finalY, adjustedX, adjustedY] = scalePosition(
-      data,
-      imageElement
-    );
 
     const newMovement = {
       x: finalX,
@@ -223,6 +225,7 @@ function VideoEditorInterface({
       });
     });
   };
+
   const scalePosition = (data, imageElement) => {
     console.log(data);
     const videoElement = videoRef.current;
@@ -249,14 +252,7 @@ function VideoEditorInterface({
     console.log("finalX", finalX);
     return [finalX, finalY, adjustedX, adjustedY];
   };
-  const getVideoFramePosition = () => {
-    const videoElement = videoRef.current;
-    const currentTimeInSeconds = videoElement ? videoElement.currentTime : 0; // Current time in seconds
-    const timestamp = currentTimeInSeconds * 1000; // Convert to milliseconds
-    const frameNumber = Math.round((timestamp / 1000) * stateFrameRate.current); // Convert milliseconds to frame number
-    console.log("timestamp", timestamp);
-    return frameNumber;
-  };
+
   // Function to handle overlay movements
 
   const updateoverlayPositions = (image, index) => {
@@ -265,6 +261,7 @@ function VideoEditorInterface({
     setOverlayPositions(overlayImages);
   };
   console.log(overlayPositions, "overlayPositions");
+
   useEffect(() => {
     //every time overlay changes, write the new overlay to ffmpeg file system
     overlays?.forEach((overlayPath, index) => {
@@ -312,16 +309,21 @@ function VideoEditorInterface({
         </video>
         {videoBounds &&
           overlays?.map((image, index) => (
-            <Draggable
-              key={index}
-              axis="both"
-              bounds="parent"
-              onDrag={(e, data) => handleDrag(index, e, data, image)}
-            >
-         
-
-              {/* </div> */}
-            </Draggable>
+            // <Draggable
+            //   key={index}
+            //   axis="both"
+            //   bounds="parent"
+            //   onDrag={(e, data) => handleDrag(index, e, data, image)}
+            // >
+            //   <img src={image} className={`draggable-${index}`} />
+            // </Draggable>
+            <Image
+              image={image}
+              index={index}
+              handleDrag={handleDrag}
+              scaleX={scaleX}
+              scaleY={scaleY}
+            />
           ))}
       </div>
       {loaded && (
