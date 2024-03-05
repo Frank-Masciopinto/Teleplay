@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { DragDropBackground, DragDropOverlay } from "./components/DragDrop.jsx";
@@ -7,6 +7,7 @@ import VideoEditorInterface from "./components/VideoEditorInterface.jsx";
 const VideoEditor = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [overlays, setOverlays] = useState([]);
+  const [isDarkMode, setDarkMode] = useState(false);
   const videoRef = useRef(null);
   const playerRef = useRef(null);
 
@@ -17,6 +18,8 @@ const VideoEditor = () => {
           <VideoEditorInterface
             videoFile={videoFile}
             videoRef={videoRef}
+            isDarkMode={isDarkMode}
+            setDarkMode={setDarkMode}
             overlays={overlays}
             setOverlays={setOverlays}
             playerRef={playerRef}

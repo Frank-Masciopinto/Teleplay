@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DropzoneArea } from "material-ui-dropzone";
 import { Typography, Paper } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -46,11 +46,29 @@ export function DragDropBackground({ setVideoFile }) {
 import ImageIcon from "@mui/icons-material/Image";
 
 export function DragDropOverlay({ setOverlays }) {
+  const [addedOverlays, setAddedOverlays] = useState([]);
   const onOverlayDrop = (acceptedFiles) => {
     console.log("Uploading overlay", acceptedFiles);
     if (acceptedFiles.length === 0) return;
-    const newOverlay = URL.createObjectURL(acceptedFiles[0]);
-    setOverlays((prevOverlays) => [...prevOverlays, newOverlay]); // To allow multiple overlays
+    //only get name of file in array
+    const overlaysFileNames = acceptedFiles.map((file) => file.name);
+    //filter Out Already Added Overlays
+    const uniqueOverlays = overlaysFileNames.filter(
+      (overlay) => !addedOverlays.includes(overlay)
+    );
+    let newOverlayURLs = [];
+    acceptedFiles.forEach((file) => {
+      if (uniqueOverlays.includes(file.name)) {
+        newOverlayURLs.push(URL.createObjectURL(file));
+      }
+    });
+    console.log("newly added overlays", uniqueOverlays);
+    console.log("newly added overlay urls", newOverlayURLs);
+    setOverlays((prevOverlays) => [...prevOverlays, ...newOverlayURLs]);
+    setAddedOverlays((prevAddedOverlays) => [
+      ...prevAddedOverlays,
+      ...uniqueOverlays,
+    ]);
   };
 
   return (
@@ -66,7 +84,7 @@ export function DragDropOverlay({ setOverlays }) {
         showAlerts={["error"]} // Only show error alerts
         onChange={onOverlayDrop}
         dropzoneClass="overlay-dropzone-style"
-        maxFileSize={100000000} // Example: 100MB limit
+        maxFileSize={400000000} // Example: 100MB limit
         filesLimit={10} // Adjust based on how many overlays you want to allow
         showPreviewsInDropzone={false} // Do not show file previews inside dropzone
         useChipsForPreview // Use chips to show file previews below dropzone
